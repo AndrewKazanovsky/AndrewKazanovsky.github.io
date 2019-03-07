@@ -314,4 +314,54 @@
         });
     }
   };
+
+  // typing text animation
+
+  var text = 'London is a capital of Great Britain.';
+  var paragraph = document.getElementById('typing-animation');
+  var id = null;
+
+  function showText(str, index, onComplete) {
+    if (str.length > index) {
+      paragraph.innerHTML += str.charAt(index);
+      index++;
+
+      id = requestAnimationFrame(function() {
+        showText(str, index, onComplete);
+      });
+    } else {
+      if (typeof onComplete === 'function') {
+        onComplete();
+      }
+    }
+  }
+
+  function hideText(count, onComplete) {
+    if (count > 0) {
+      paragraph.innerHTML = paragraph.innerHTML.slice(0, paragraph.innerHTML.length - 1);
+      count--;
+
+      id = requestAnimationFrame(function() {
+        hideText(count, onComplete);
+      });
+    } else {
+      if (typeof onComplete === 'function') {
+        onComplete();
+      }
+    }
+  }
+
+  function startTypingText() {
+    id = requestAnimationFrame(function() {
+      showText(text.slice(0, 20), 0, function() {
+        hideText(10, function() {
+          showText(text.slice(10), 0, function() {
+            cancelAnimationFrame(id);
+          });
+        });
+      });
+    });
+  }
+
+  startTypingText();
 })();
